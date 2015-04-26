@@ -3,7 +3,7 @@
 
 
 #adapt these to your needs
-NIC="wlan7"
+NIC="wlan0"
 CHANNEL="13"
 
 
@@ -16,7 +16,7 @@ PORT=0
 
 ##################################
 
-
+$WBC_PATH="/home/pi/wifibroadcast"
 
 
 # Make sure only root can run our script
@@ -28,10 +28,10 @@ fi
 
 echo "updating wifi ($NIC, $CHANNEL)"
 
-ifconfig wlan0 down
-iw dev wlan0 set monitor otherbss fcsfail
-ifconfig wlan0 up
-iwconfig wlan0 channel $CHANNEL
+ifconfig $NIC down
+iw dev $NIC set monitor otherbss fcsfail
+ifconfig $NIC up
+iwconfig $NIC channel $CHANNEL
 
 echo "Starting rx for $NIC"
-/home/pi/wifibroadcast/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NIC | /opt/vc/src/hello_pi/hello_video/hello_video.bin 
+$WBC_PATH/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NIC | /opt/vc/src/hello_pi/hello_video/hello_video.bin 
