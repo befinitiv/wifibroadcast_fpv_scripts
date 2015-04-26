@@ -3,14 +3,14 @@
 
 
 #adapt these to your needs
-NIC="wlan0"
-CHANNEL="6"
+NIC="wlan7"
+CHANNEL="13"
 
 
 ##################################
 
 
-#change these only if you know what you are doing
+#change these only if you know what you are doing (and remember to change them on both sides)
 RETRANSMISSION_BLOCK_SIZE=8
 PORT=0
 
@@ -31,7 +31,7 @@ echo "updating wifi ($NIC, $CHANNEL)"
 ifconfig wlan0 down
 iw dev wlan0 set monitor otherbss fcsfail
 ifconfig wlan0 up
-iwconfig wlan0 channel 13
+iwconfig wlan0 channel $CHANNEL
 
 echo "Starting rx for $NIC"
 /home/pi/wifibroadcast/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NIC | /opt/vc/src/hello_pi/hello_video/hello_video.bin 
