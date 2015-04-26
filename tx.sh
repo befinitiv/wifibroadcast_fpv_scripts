@@ -21,7 +21,7 @@ PORT=0
 
 ##################################
 
-$WBC_PATH="/home/pi/wifibroadcast"
+WBC_PATH="/home/pi/wifibroadcast"
 
 
 # Make sure only root can run our script
