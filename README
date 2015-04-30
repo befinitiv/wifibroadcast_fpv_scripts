@@ -1,0 +1,8 @@
+How to use:
+
+* Copy either init.d/wbcrxd or init.d/wbctxd to /etc/init.d
+* Update init scripts: sudo update-rc.d wbcrxd start
+
+Now either the rx.sh or tx.sh scripts should start automatically at boot.
+
+Note that these scripts are expected to be under /home/pi/wifibroadcast_fpv_scripts . Otherwise you would need to adapt the wbcrxd and wbctx.
