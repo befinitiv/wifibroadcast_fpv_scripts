@@ -17,11 +17,11 @@ case "$1" in
         ;;
     stop)
         # STOP
-        killall rx.sh
+        killall hello_video.bin
         ;;
     restart)
         # RESTART
-				killall rx.sh
+				killall hello_video.bin
         /home/pi/wifibroadcast_fpv_scripts/rx.sh > /dev/null &
         ;;
 esac
