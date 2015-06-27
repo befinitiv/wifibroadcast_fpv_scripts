@@ -10,6 +10,7 @@ SAVE_PATH="/media/usb0/telemetry"
 WBC_PATH="/home/pi/wifibroadcast"
 FRSKY_OMX_OSD_PATH="/home/pi/frsky_omx_osd"
 
+sleep 10
 
 # Make sure only root can run our script
 if [[ $EUID -ne 0 ]]; then
