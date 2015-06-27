@@ -19,10 +19,10 @@ PORT=0
 
 function prepare_nic {
 	echo "updating wifi ($1, $2)"
-#	ifconfig $1 down
-#	iw dev $1 set monitor otherbss fcsfail
-#	ifconfig $1 up
-#	iwconfig $1 channel $2
+	ifconfig $1 down
+	iw dev $1 set monitor otherbss fcsfail
+	ifconfig $1 up
+	iwconfig $1 channel $2
 }
 
 ################################# SCRIPT START #######################
@@ -42,7 +42,7 @@ done
 
 if [ -d "$SAVE_PATH" ]; then
 	echo "Starting with recording"
-	FILE_NAME=$SAVE_PATH`ls $SAVE_PATH | wc -l`.rawvid
+	FILE_NAME=$SAVE_PATH/`ls $SAVE_PATH | wc -l`.rawvid
 	$WBC_PATH/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
 else
 	echo "Starting without recording"
