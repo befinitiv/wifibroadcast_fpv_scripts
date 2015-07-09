@@ -3,20 +3,29 @@
 
 
 #adapt these to your needs
-NIC="wlan0"
 CHANNEL="13"
+NICS=`ls /sys/class/net | grep wlan`
+SAVE_PATH="/media/usb0/video"
+
+WBC_PATH="/home/pi/wifibroadcast"
+DISPLAY_PROGRAM="/opt/vc/src/hello_pi/hello_video/hello_video.bin" 
 
 
 ##################################
-
-
 #change these only if you know what you are doing (and remember to change them on both sides)
 RETRANSMISSION_BLOCK_SIZE=8
 PORT=0
-
 ##################################
 
-WBC_PATH="/home/pi/wifibroadcast"
+function prepare_nic {
+	echo "updating wifi ($1, $2)"
+#	ifconfig $1 down
+#	iw dev $1 set monitor otherbss fcsfail
+#	ifconfig $1 up
+#	iwconfig $1 channel $2
+}
+
+################################# SCRIPT START #######################
 
 
 # Make sure only root can run our script
@@ -25,13 +34,17 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+#prepare NICS
+for NIC in $NICS
+do
+	prepare_nic $NIC $CHANNEL
+done
 
-echo "updating wifi ($NIC, $CHANNEL)"
-
-ifconfig $NIC down
-iw dev $NIC set monitor otherbss fcsfail
-ifconfig $NIC up
-iwconfig $NIC channel $CHANNEL
-
-echo "Starting rx for $NIC"
-$WBC_PATH/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NIC | /opt/vc/src/hello_pi/hello_video/hello_video.bin 
+if [ -d "$SAVE_PATH" ]; then
+	echo "Starting with recording"
+	FILE_NAME=$SAVE_PATH`ls $SAVE_PATH | wc -l`.rawvid
+	$WBC_PATH/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
+else
+	echo "Starting without recording"
+	$WBC_PATH/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NICS | $DISPLAY_PROGRAM
+fi
