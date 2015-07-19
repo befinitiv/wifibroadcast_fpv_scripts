@@ -14,9 +14,10 @@ KEYFRAMERATE=48
 
 ##################################
 
-
 #change these only if you know what you are doing (and remember to change them on both sides)
-RETRANSMISSION_BLOCK_SIZE=8
+BLOCK_SIZE=8
+FECS=4
+PACKET_LENGTH=1024
 PORT=0
 
 ##################################
@@ -39,4 +40,4 @@ ifconfig $NIC up
 iwconfig $NIC channel $CHANNEL
 
 echo "Starting tx for $NIC"
-raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NIC
+raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NIC

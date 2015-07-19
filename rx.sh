@@ -13,7 +13,9 @@ DISPLAY_PROGRAM="/opt/vc/src/hello_pi/hello_video/hello_video.bin"
 
 ##################################
 #change these only if you know what you are doing (and remember to change them on both sides)
-RETRANSMISSION_BLOCK_SIZE=8
+BLOCK_SIZE=8
+FECS=4
+PACKET_LENGTH=1024
 PORT=0
 ##################################
 
@@ -43,8 +45,8 @@ done
 if [ -d "$SAVE_PATH" ]; then
 	echo "Starting with recording"
 	FILE_NAME=$SAVE_PATH/`ls $SAVE_PATH | wc -l`.rawvid
-	$WBC_PATH/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
+	$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
 else
 	echo "Starting without recording"
-	$WBC_PATH/rx -p $PORT -b $RETRANSMISSION_BLOCK_SIZE $NICS | $DISPLAY_PROGRAM
+	$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | $DISPLAY_PROGRAM
 fi
