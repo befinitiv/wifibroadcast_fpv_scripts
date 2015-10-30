@@ -36,6 +36,9 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+#wait a bit until the wifi cards are ready
+sleep 2
+
 #prepare NICS
 for NIC in $NICS
 do
