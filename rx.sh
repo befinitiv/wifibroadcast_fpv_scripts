@@ -39,17 +39,23 @@ fi
 #wait a bit until the wifi cards are ready
 sleep 2
 
-#prepare NICS
-for NIC in $NICS
+#start the rx in an endless loop so that is can recover in case something crashes
+while :
 do
-	prepare_nic $NIC $CHANNEL
-done
+	#prepare NICS
+	for NIC in $NICS
+	do
+		prepare_nic $NIC $CHANNEL
+	done
 
-if [ -d "$SAVE_PATH" ]; then
-	echo "Starting with recording"
-	FILE_NAME=$SAVE_PATH/`ls $SAVE_PATH | wc -l`.rawvid
-	$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
-else
-	echo "Starting without recording"
-	$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | $DISPLAY_PROGRAM
-fi
+	if [ -d "$SAVE_PATH" ]; then
+		echo "Starting with recording"
+		FILE_NAME=$SAVE_PATH/`ls $SAVE_PATH | wc -l`.rawvid
+		$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
+	else
+		echo "Starting without recording"
+		$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | $DISPLAY_PROGRAM
+	fi
+
+	sleep 1
+done
