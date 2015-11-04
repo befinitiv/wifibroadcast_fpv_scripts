@@ -1,7 +1,7 @@
 How to use:
 
-* Copy either init.d/wbcrxd or init.d/wbctxd to /etc/init.d
-* Update init scripts: sudo update-rc.d wbcrxd start
+* Copy either systemd/wbcrxd or systemd/wbctxd to /etc/systemd/system
+* Enable service: sudo systemctl enable wbcrxd
 
 Now either the rx.sh or tx.sh scripts should start automatically at boot.
 
