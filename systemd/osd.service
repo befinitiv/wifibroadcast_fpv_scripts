@@ -5,6 +5,7 @@ After=wbcrxd
 [Service]
 TimeoutStartSec=0
 ExecStart=/home/pi/wifibroadcast_fpv_scripts/osd.sh
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
