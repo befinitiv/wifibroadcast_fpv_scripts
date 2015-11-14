@@ -34,19 +34,14 @@ fi
 #wait a bit. this help automatic starting
 sleep 2
 
-#start the tx in an endless loop so that is can recover in case something crashes
-while :
-do
-	echo "updating wifi ($NIC, $CHANNEL)"
-	ifconfig $NIC down
-	iw dev $NIC set monitor otherbss fcsfail
-	ifconfig $NIC up
-	iwconfig $NIC channel $CHANNEL
+echo "updating wifi ($NIC, $CHANNEL)"
+ifconfig $NIC down
+iw dev $NIC set monitor otherbss fcsfail
+ifconfig $NIC up
+iwconfig $NIC channel $CHANNEL
 
-	echo "Starting tx for $NIC"
-	raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NIC
+echo "Starting tx for $NIC"
+raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NIC
 
-	killall raspivid
-	killall tx
-	sleep 1
-done
+killall raspivid
+killall tx

@@ -1,6 +1,8 @@
 #!/bin/bash
 # rx script
 
+#wait a bit until the wifi cards are ready
+sleep 2
 
 #adapt these to your needs
 CHANNEL="13"
@@ -36,26 +38,19 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-#wait a bit until the wifi cards are ready
-sleep 2
 
-#start the rx in an endless loop so that is can recover in case something crashes
-while :
+#prepare NICS
+for NIC in $NICS
 do
-	#prepare NICS
-	for NIC in $NICS
-	do
-		prepare_nic $NIC $CHANNEL
-	done
-
-	if [ -d "$SAVE_PATH" ]; then
-		echo "Starting with recording"
-		FILE_NAME=$SAVE_PATH/`ls $SAVE_PATH | wc -l`.rawvid
-		$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
-	else
-		echo "Starting without recording"
-		$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | $DISPLAY_PROGRAM
-	fi
-
-	sleep 1
+	prepare_nic $NIC $CHANNEL
 done
+
+if [ -d "$SAVE_PATH" ]; then
+	echo "Starting with recording"
+	FILE_NAME=$SAVE_PATH/`ls $SAVE_PATH | wc -l`.rawvid
+	$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | tee $FILE_NAME | $DISPLAY_PROGRAM
+else
+	echo "Starting without recording"
+	$WBC_PATH/rx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS | $DISPLAY_PROGRAM
+fi
+
