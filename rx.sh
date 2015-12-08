@@ -5,7 +5,8 @@
 sleep 2
 
 #adapt these to your needs
-CHANNEL="13"
+CHANNEL2G="13"
+CHANNEL5G="149"
 NICS=`ls /sys/class/net | grep wlan`
 SAVE_PATH="/media/usb0/video"
 
@@ -21,13 +22,34 @@ PACKET_LENGTH=1024
 PORT=0
 ##################################
 
+
 function prepare_nic {
-	echo "updating wifi ($1, $2)"
-	ifconfig $1 down
-	iw dev $1 set monitor otherbss fcsfail
-	ifconfig $1 up
-	iwconfig $1 channel $2
+	DRIVER=`cat /sys/class/net/$1/device/uevent | grep DRIVER | sed 's/DRIVER=//'`
+
+	case $DRIVER in
+		ath9k_htc)
+			echo "Setting $1 to channel $CHANNEL2G"
+			ifconfig $1 down
+			iw dev $1 set monitor otherbss fcsfail
+			ifconfig $1 up
+			iwconfig $1 channel $CHANNEL2G
+		;;
+		rt2800usb) echo "$DRIVER new shit"
+			echo "Setting $1 to channel $CHANNEL5G"
+			ifconfig $1 down
+			iw dev $1 set monitor otherbss fcsfail
+			ifconfig $1 up
+			iw reg set BO
+			iwconfig $1 rate 24M
+			iwconfig $1 channel $CHANNEL5G
+		;;
+		*) echo "ERROR: Unknown wifi driver on $1: $DRIVER" && exit
+		;;
+	esac
 }
+
+
+
 
 ################################# SCRIPT START #######################
 
@@ -42,7 +64,7 @@ fi
 #prepare NICS
 for NIC in $NICS
 do
-	prepare_nic $NIC $CHANNEL
+	prepare_nic $NIC
 done
 
 if [ -d "$SAVE_PATH" ]; then

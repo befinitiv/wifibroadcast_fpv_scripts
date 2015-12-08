@@ -4,7 +4,8 @@
 
 #adapt these to your needs
 NIC="wlan0"
-CHANNEL="13"
+CHANNEL2G="13"
+CHANNEL5G="149"
 
 WIDTH=1280
 HEIGHT=720
@@ -24,6 +25,30 @@ PORT=0
 
 WBC_PATH="/home/pi/wifibroadcast"
 
+function prepare_nic {
+	DRIVER=`cat /sys/class/net/$1/device/uevent | grep DRIVER | sed 's/DRIVER=//'`
+
+	case $DRIVER in
+		ath9k_htc)
+			echo "Setting $1 to channel $CHANNEL2G"
+			ifconfig $1 down
+			iw dev $1 set monitor otherbss fcsfail
+			ifconfig $1 up
+			iwconfig $1 channel $CHANNEL2G
+		;;
+		rt2800usb) echo "$DRIVER new shit"
+			echo "Setting $1 to channel $CHANNEL5G"
+			ifconfig $1 down
+			iw dev $1 set monitor otherbss fcsfail
+			ifconfig $1 up
+			iw reg set BO
+			iwconfig $1 rate 24M
+			iwconfig $1 channel $CHANNEL5G
+		;;
+		*) echo "ERROR: Unknown wifi driver on $1: $DRIVER" && exit
+		;;
+	esac
+}
 
 # Make sure only root can run our script
 if [[ $EUID -ne 0 ]]; then
@@ -31,14 +56,10 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-#wait a bit. this help automatic starting
+#wait a bit. this helps automatic starting
 sleep 2
 
-echo "updating wifi ($NIC, $CHANNEL)"
-ifconfig $NIC down
-iw dev $NIC set monitor otherbss fcsfail
-ifconfig $NIC up
-iwconfig $NIC channel $CHANNEL
+prepare_nic $NIC
 
 echo "Starting tx for $NIC"
 raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NIC
