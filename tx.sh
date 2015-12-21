@@ -1,6 +1,10 @@
 #!/bin/bash
 # tx script
 
+#if we detect no camera, we fall asleep
+if vcgencmd get_camera | grep -q detected=0; then
+	sleep 365d
+fi
 
 #wait a bit. this helps automatic starting
 sleep 2

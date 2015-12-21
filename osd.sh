@@ -1,6 +1,11 @@
 #!/bin/bash
 
 
+#if we detect the camera, we fall asleep
+if vcgencmd get_camera | grep -q detected=1; then
+	sleep 365d
+fi
+
 #adapt these to your needs
 NIC="wlan0"
 PORT=1

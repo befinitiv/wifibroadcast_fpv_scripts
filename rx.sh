@@ -1,6 +1,14 @@
 #!/bin/bash
 # rx script
 
+
+#if we detect the camera, we fall asleep
+if vcgencmd get_camera | grep -q detected=1; then
+	sleep 365d
+fi
+
+
+
 #wait a bit until the wifi cards are ready
 sleep 2
 
