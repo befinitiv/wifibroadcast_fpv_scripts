@@ -14,7 +14,7 @@ sleep 2
 
 
 
-source settings.sh
+source /home/pi/wifibroadcast_fpv_scripts/settings.sh
 
 DISPLAY_PROGRAM="/opt/vc/src/hello_pi/hello_video/hello_video.bin" 
 
@@ -32,7 +32,7 @@ function prepare_nic {
 			ifconfig $1 up
 			iwconfig $1 channel $CHANNEL2G
 		;;
-		rt2800usb) echo "$DRIVER new shit"
+		rt2800usb)
 			echo "Setting $1 to channel $CHANNEL5G"
 			ifconfig $1 down
 			iw dev $1 set monitor otherbss fcsfail
