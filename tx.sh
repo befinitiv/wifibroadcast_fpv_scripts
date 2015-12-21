@@ -2,28 +2,11 @@
 # tx script
 
 
-#adapt these to your needs
-NIC="wlan0"
-CHANNEL2G="13"
-CHANNEL5G="149"
+#wait a bit. this helps automatic starting
+sleep 2
 
-WIDTH=1280
-HEIGHT=720
-FPS=48
-BITRATE=4000000
-KEYFRAMERATE=48
+source settings.sh
 
-##################################
-
-#change these only if you know what you are doing (and remember to change them on both sides)
-BLOCK_SIZE=8
-FECS=4
-PACKET_LENGTH=1024
-PORT=0
-
-##################################
-
-WBC_PATH="/home/pi/wifibroadcast"
 
 function prepare_nic {
 	DRIVER=`cat /sys/class/net/$1/device/uevent | grep DRIVER | sed 's/DRIVER=//'`
@@ -56,13 +39,11 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-#wait a bit. this helps automatic starting
-sleep 2
 
-prepare_nic $NIC
+prepare_nic $NICS
 
-echo "Starting tx for $NIC"
-raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NIC
+echo "Starting tx for $NICS"
+raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NICS
 
 killall raspivid
 killall tx

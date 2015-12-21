@@ -4,23 +4,13 @@
 #wait a bit until the wifi cards are ready
 sleep 2
 
-#adapt these to your needs
-CHANNEL2G="13"
-CHANNEL5G="149"
-NICS=`ls /sys/class/net | grep wlan`
-SAVE_PATH="/media/usb0/video"
 
-WBC_PATH="/home/pi/wifibroadcast"
+
+source settings.sh
+
 DISPLAY_PROGRAM="/opt/vc/src/hello_pi/hello_video/hello_video.bin" 
 
 
-##################################
-#change these only if you know what you are doing (and remember to change them on both sides)
-BLOCK_SIZE=8
-FECS=4
-PACKET_LENGTH=1024
-PORT=0
-##################################
 
 
 function prepare_nic {
