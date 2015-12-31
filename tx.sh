@@ -3,6 +3,7 @@
 
 #if we detect no camera, we fall asleep
 if vcgencmd get_camera | grep -q detected=0; then
+	echo "tx.sh: Falling asleep because no camera has been detected"
 	sleep 365d
 fi
 
@@ -50,7 +51,7 @@ fi
 prepare_nic $NIC
 
 echo "Starting tx for $NIC"
-raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NIC
+raspivid -ih -t 0 -w $WIDTH -h $HEIGHT -fps $FPS -b $BITRATE -n -g $KEYFRAMERATE -pf high -o - | $WBC_PATH/tx -p $PORT -b $BLOCK_SIZE -r $FECS -f $PACKET_LENGTH $NIC > /dev/null
 
 killall raspivid
 killall tx

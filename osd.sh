@@ -3,6 +3,7 @@
 
 #if we detect the camera, we fall asleep
 if vcgencmd get_camera | grep -q detected=1; then
+	echo "osd.sh: Falling asleep because a camera has been detected"
 	sleep 365d
 fi
 
